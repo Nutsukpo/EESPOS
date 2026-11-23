@@ -237,6 +237,43 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row g-3 mt-1">
+                    <div class="col-md-6">
+                        <label for="password" class="form-label">
+                            Password <span class="required-mark">*</span> for new accounts
+                        </label>
+                        <input type="password"
+                               id="password"
+                               name="password"
+                               class="form-control @error('password') is-invalid @enderror"
+                               placeholder="At least 8 characters"
+                               minlength="8"
+                               autocomplete="new-password">
+                        @error('password')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="password_confirmation" class="form-label">
+                            Confirm Password
+                        </label>
+                        <input type="password"
+                               id="password_confirmation"
+                               name="password_confirmation"
+                               class="form-control"
+                               placeholder="Enter the password again"
+                               minlength="8"
+                               autocomplete="new-password">
+                    </div>
+                </div>
+
+                <div class="form-text mt-2">
+                    A password is required when creating a new account.
+                    If the email already belongs to an EES POS user, leave these fields blank;
+                    their existing password will remain unchanged.
+                </div>
             </div>
         </div>
 
@@ -286,11 +323,41 @@
                     @endif
                 </div>
 
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <label for="branch_id" class="form-label">
+                            Assigned Branch <span class="required-mark">*</span>
+                        </label>
+
+                        <select id="branch_id"
+                                name="branch_id"
+                                class="form-select @error('branch_id') is-invalid @enderror"
+                                required>
+                            <option value="">Select a branch</option>
+
+                            @foreach ($branches as $branch)
+                                <option value="{{ $branch->id }}"
+                                    @selected((string) old('branch_id') === (string) $branch->id)>
+                                    {{ $branch->name }}{{ $branch->is_main ? ' (Main Branch)' : '' }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        @error('branch_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+
+                        <div class="form-text">
+                            The staff member will only access branches assigned to them.
+                        </div>
+                    </div>
+                </div>
+
                 <div class="account-notice mt-4">
                     <i class="fas fa-circle-info"></i>
                     <div>
                         <strong>Account security</strong>
-                        New accounts will receive a secure password-setup invitation.
+                        You will set the password for each new staff account.
                         Existing EES POS accounts will retain their current login credentials.
                         Their access to this business will be controlled by the assigned business role.
                     </div>

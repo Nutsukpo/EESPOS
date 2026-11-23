@@ -6,7 +6,7 @@ use App\Models\Business;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -28,6 +28,14 @@ class BusinessUserController extends Controller
 
         $canAssignRoles = $request->user()->can('staff.assign_roles');
 
+        $branches = $business->branches()
+            ->where('is_active', true)
+            ->orderByDesc('is_main')
+            ->orderBy('name')
+            ->get();
+
+        abort_if($branches->isEmpty(), 422, 'Create an active branch before adding staff.');
+
         $roles = $canAssignRoles
             ? \Spatie\Permission\Models\Role::query()
                 ->where('business_id', $business->id)
@@ -40,7 +48,8 @@ class BusinessUserController extends Controller
         return view('businesses.users.create', compact(
             'business',
             'roles',
-            'canAssignRoles'
+            'canAssignRoles',
+            'branches'
         ));
     }
 
@@ -60,6 +69,16 @@ class BusinessUserController extends Controller
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
+            'branch_id' => [
+                'required',
+                'integer',
+                Rule::exists('branches', 'id')->where(
+                    fn ($query) => $query
+                        ->where('business_id', $business->id)
+                        ->where('is_active', true)
+                ),
+            ],
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ];
 
         if ($canAssignRoles) {
@@ -107,10 +126,16 @@ class BusinessUserController extends Controller
             $isNewUser = !$existingUser;
 
             if ($isNewUser) {
+                if (empty($validated['password'])) {
+                    throw ValidationException::withMessages([
+                        'password' => 'A password of at least 8 characters is required for a new account.',
+                    ]);
+                }
+
                 $user = User::create([
                     'name' => $validated['name'],
                     'email' => $email,
-                    'password' => Str::random(64),
+                    'password' => Hash::make($validated['password']),
                 ]);
             } else {
                 // Preserve existing global account details and password.
@@ -120,6 +145,11 @@ class BusinessUserController extends Controller
             $business->users()->attach($user->id, [
                 'status' => 'active',
                 'joined_at' => now(),
+            ]);
+
+            // Assign the selected branch without removing other assignments.
+            $user->branches()->syncWithoutDetaching([
+                (int) $validated['branch_id'],
             ]);
 
             $roleName = $canAssignRoles
@@ -152,12 +182,8 @@ class BusinessUserController extends Controller
         });
 
         if ($result['is_new']) {
-            // Notifications are sent only after the transaction commits.
+            // Send email verification after the account has been created.
             $result['user']->sendEmailVerificationNotification();
-
-            Password::sendResetLink([
-                'email' => $result['user']->email,
-            ]);
         }
 
         return redirect()
@@ -167,8 +193,8 @@ class BusinessUserController extends Controller
             ->with(
                 'success',
                 $result['is_new']
-                    ? 'Staff account created and password setup instructions generated.'
-                    : 'Existing account successfully added to this business.'
+                    ? 'Staff account created successfully. The password you set can now be used to log in.'
+                    : 'Existing account successfully added to this business. Its current password was preserved.'
             );
     }
 

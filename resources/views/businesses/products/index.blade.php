@@ -34,6 +34,10 @@
     .stock-low { background:#fff6df; color:#9a6a00; }
     .stock-out { background:#fff0ed; color:#bd4536; }
     .stock-na { background:#eef3f0; color:#52645a; }
+    .expiry-upcoming { background:#e8f6ed; color:#19834a; }
+    .expiry-soon { background:#fff2d6; color:#a76500; }
+    .expiry-expired { background:#ffe1dc; color:#c62828; }
+    .expiry-na { background:#eef3f0; color:#52645a; }
     .type-pill { background:#eef3f0; color:#52645a; border-radius:20px; padding:5px 9px; font-size:.65rem; }
     .empty-products { padding:55px 20px; text-align:center; color:#718078; }
     .empty-products i { font-size:2rem; color:#b5c5ba; margin-bottom:13px; }
@@ -139,12 +143,13 @@
                 <thead>
                     <tr>
                         <th>Product</th>
-                        <th>SKU</th>
+                        <th>Item Description</th>
                         <th>Category</th>
-                        <th>Type</th>
+                        <!-- <th>Type</th> -->
                         <th>Selling Price</th>
                         <th>Opening Stock</th>
                         <th>Current Stock</th>
+                        <th>Expiry Date</th>
                         <th>Minimum Stock</th>
                         <th>Stock Status</th>
                         <th>Variations</th>
@@ -176,10 +181,27 @@
                             </td>
                             <td>{{ $firstVariation?->sku ?? '—' }}</td>
                             <td>{{ $product->category?->name ?? 'Uncategorized' }}</td>
-                            <td><span class="type-pill">{{ ucfirst($product->product_type) }}</span></td>
+                            <!-- <td><span class="type-pill">{{ ucfirst($product->product_type) }}</span></td> -->
                             <td>{{ $firstVariation ? number_format((float)$firstVariation->selling_price, 2) : '—' }}</td>
                             <td>{{ number_format($product->opening_stock, 2) }}</td>
                             <td><strong>{{ number_format($product->current_stock, 2) }}</strong></td>
+                            <td>
+                                @if(!$product->nearest_expiry_date)
+                                    <span class="status-pill expiry-na">No expiry</span>
+                                @elseif($product->nearest_expiry_date->lt(today()))
+                                    <span class="status-pill expiry-expired">
+                                        Expired · {{ $product->nearest_expiry_date->format('d M Y') }}
+                                    </span>
+                                @elseif($product->nearest_expiry_date->lte(today()->addDays(7)))
+                                    <span class="status-pill expiry-soon">
+                                        {{ $product->nearest_expiry_date->format('d M Y') }}
+                                    </span>
+                                @else
+                                    <span class="status-pill expiry-upcoming">
+                                        {{ $product->nearest_expiry_date->format('d M Y') }}
+                                    </span>
+                                @endif
+                            </td>
                             <td>{{ number_format($product->minimum_stock, 2) }}</td>
                             <td>
                                 @if(!$selectedBranch)
@@ -230,7 +252,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="12">
+                            <td colspan="13">
                                 <div class="empty-products">
                                     <i class="fas fa-box-open d-block"></i>
                                     <strong>No products found</strong>

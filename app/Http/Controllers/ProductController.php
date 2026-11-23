@@ -80,8 +80,18 @@ class ProductController extends Controller
 
         $inventories = collect();
         $openingStocks = collect();
+        $expiryBatches = collect();
 
         if ($selectedBranch && $variationIds->isNotEmpty()) {
+            $expiryBatches = StockBatch::where('business_id', $business->id)
+                ->where('branch_id', $selectedBranch->id)
+                ->whereIn('product_variation_id', $variationIds)
+                ->where('quantity', '>', 0)
+                ->whereNotNull('expiry_date')
+                ->orderBy('expiry_date')
+                ->get()
+                ->groupBy('product_variation_id');
+
             $inventories = BranchInventory::where('business_id', $business->id)
                 ->where('branch_id', $selectedBranch->id)
                 ->whereIn('product_variation_id', $variationIds)
@@ -120,6 +130,16 @@ class ProductController extends Controller
                 $productVariationIds->sum(
                     fn ($id) => (float) ($inventories->get($id)?->minimum_stock ?? 0)
                 )
+            );
+
+            $nearestExpiryBatch = $productVariationIds
+                ->flatMap(fn ($id) => $expiryBatches->get($id, collect()))
+                ->sortBy('expiry_date')
+                ->first();
+
+            $product->setAttribute(
+                'nearest_expiry_date',
+                $nearestExpiryBatch?->expiry_date
             );
         }
 
@@ -206,6 +226,7 @@ class ProductController extends Controller
             'variations.*.cost_price' => ['required', 'numeric', 'min:0'],
             'variations.*.selling_price' => ['required', 'numeric', 'min:0'],
             'variations.*.opening_quantity' => ['required', 'numeric', 'min:0'],
+            'variations.*.expiry_date' => ['nullable', 'date'],
             'variations.*.minimum_stock' => ['required', 'numeric', 'min:0'],
             'variations.*.tax_status' => [
                 'required',
@@ -268,7 +289,7 @@ class ProductController extends Controller
                         'branch_id' => $validated['branch_id'],
                         'product_variation_id' => $variation->id,
                         'batch_number' => null,
-                        'expiry_date' => null,
+                        'expiry_date' => $variationData['expiry_date'] ?? null,
                         'received_quantity' => $openingQuantity,
                         'quantity' => $openingQuantity,
                         'received_at' => now(),

@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                maxlength="255" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">SKU <span class="text-danger">*</span></label>
+                        <label class="form-label">item Description <span class="text-danger">*</span></label>
                         <input name="variations[${index}][sku]" class="form-control"
                                maxlength="255" required>
                     </div>
@@ -201,6 +201,13 @@ document.addEventListener('DOMContentLoaded', function () {
                         <input type="number" step="0.0001" min="0"
                                name="variations[${index}][opening_quantity]"
                                class="form-control" value="0" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Expiry Date</label>
+                        <input type="date"
+                               name="variations[${index}][expiry_date]"
+                               class="form-control">
+                        <small class="text-muted">Optional. Leave blank if the product does not expire.</small>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Minimum Stock <span class="text-danger">*</span></label>

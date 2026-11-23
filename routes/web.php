@@ -14,36 +14,11 @@ use App\Http\Controllers\SalesHistoryController;
 // ============================================
 
 Route::get('/', function () {
-
-    // Redirect visitors to login.
     if (!auth()->check()) {
         return redirect()->route('login');
     }
 
-    $user = auth()->user();
-
-    // Find an active business membership.
-    $business = $user->businesses()
-        ->wherePivot('status', 'active')
-        ->first();
-
-    // Check owned businesses if no membership was found.
-    if (!$business) {
-        $business = $user->ownedBusinesses()
-            ->where('is_active', true)
-            ->first();
-    }
-
-    // Redirect to the business dashboard.
-    if ($business) {
-        return redirect()->route('business.dashboard', [
-            'business' => $business->slug,
-        ]);
-    }
-
-    // User has no business yet.
-    return redirect()->route('business.create');
-
+    return redirect()->route('dashboard');
 })->name('home');
 
 
@@ -53,16 +28,46 @@ Route::get('/dashboard', function () {
 
     $user = auth()->user();
 
-    // Find a business associated with this user.
-    $business = $user->businesses()->first()
-        ?? $user->ownedBusinesses()->first();
+    // Find an active business membership first.
+    $business = $user->businesses()
+        ->wherePivot('status', 'active')
+        ->first();
 
-    // If the user has no business, open business registration.
+    // Otherwise, check the user's active owned business.
+    if (!$business) {
+        $business = $user->ownedBusinesses()
+            ->where('is_active', true)
+            ->first();
+    }
+
     if (!$business) {
         return redirect()->route('business.create');
     }
 
-    // Otherwise, open the business dashboard.
+    // Check the user's role within this business.
+    $registrar = app(\Spatie\Permission\PermissionRegistrar::class);
+    $previousTeamId = $registrar->getPermissionsTeamId();
+
+    try {
+        $registrar->setPermissionsTeamId($business->id);
+
+        // Clear cached role relationships before checking.
+        $user->unsetRelation('roles');
+        $user->unsetRelation('permissions');
+
+        $isCashier = $user->hasRole('Cashier');
+    } finally {
+        $registrar->setPermissionsTeamId($previousTeamId);
+    }
+
+    // Cashiers go directly to the Point of Sale.
+    if ($isCashier) {
+        return redirect()->route('business.pos.index', [
+            'business' => $business->slug,
+        ]);
+    }
+
+    // Other business users go to the dashboard.
     return redirect()->route('business.dashboard', [
         'business' => $business->slug,
     ]);

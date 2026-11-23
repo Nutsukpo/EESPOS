@@ -123,22 +123,10 @@ class BusinessController extends Controller
 
             try {
                 /*
-                 * Create default business roles.
+                 * Create default business roles and assign their permissions.
+                 * The seeder preserves existing custom permissions.
                  */
-                $roleNames = [
-                    'Owner',
-                    'Manager',
-                    'Cashier',
-                    'Inventory Officer',
-                ];
-
-                foreach ($roleNames as $roleName) {
-                    Role::firstOrCreate([
-                        'name' => $roleName,
-                        'guard_name' => 'web',
-                        'business_id' => $business->id,
-                    ]);
-                }
+                app(\Database\Seeders\BusinessPermissionSeeder::class)->run();
 
                 /*
                  * Assign the Owner role to the business creator.

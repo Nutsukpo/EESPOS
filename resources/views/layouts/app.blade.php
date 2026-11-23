@@ -675,13 +675,34 @@
                     </button>
                 </div>
 
+                @php
+                    $isCashierSidebar = false;
+                    $sidebarBusiness = request()->attributes->get('current_business');
+
+                    if ($sidebarBusiness && auth()->check()) {
+                        $sidebarRegistrar = app(\Spatie\Permission\PermissionRegistrar::class);
+                        $sidebarPreviousTeam = $sidebarRegistrar->getPermissionsTeamId();
+
+                        try {
+                            $sidebarRegistrar->setPermissionsTeamId($sidebarBusiness->id);
+                            auth()->user()->unsetRelation('roles');
+                            auth()->user()->unsetRelation('permissions');
+                            $isCashierSidebar = auth()->user()->hasRole('Cashier');
+                        } finally {
+                            $sidebarRegistrar->setPermissionsTeamId($sidebarPreviousTeam);
+                        }
+                    }
+                @endphp
+
                 <div class="sidebar-content">
                     <div class="nav-section">
                         <div class="nav-section-title">Workspace</div>
+@unless($isCashierSidebar)
                         <a href="{{ route('dashboard') }}"
                            class="nav-link-main {{ request()->routeIs('dashboard') || request()->routeIs('business.dashboard') ? 'active' : '' }}">
                             <i class="fas fa-gauge-high"></i><span>Dashboard</span>
                         </a>
+                        @endunless
                         @if(request()->attributes->get('current_business'))
                             <a href="{{ route('business.profile.show', ['business' => request()->attributes->get('current_business')->slug]) }}"
                                class="nav-link-main {{ request()->routeIs('business.profile.*') ? 'active' : '' }}">
@@ -716,6 +737,7 @@
                     </div>
                     @endif
 
+                    @unless($isCashierSidebar)
                     <div class="nav-section nav-group" data-menu-group="inventory">
                         <button type="button" class="nav-link-main nav-toggle">
                             <i class="fas fa-boxes-stacked"></i><span>Inventory</span>
@@ -792,6 +814,7 @@
                         <div class="nav-section-title">Support</div>
                         <a href="#" class="nav-link-main"><i class="fas fa-circle-question"></i><span>Help & Support</span><span class="nav-soon">SOON</span></a>
                     </div>
+                    @endunless
                 </div>
 
                 <div class="sidebar-user">

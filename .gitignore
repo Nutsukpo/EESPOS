@@ -45,3 +45,9 @@ yarn-error.log
 
 # Testing environment credentials
 .env.testing
+
+# Temporary backup files
+*.bak
+
+# Timestamped temporary backup files
+*.backup-*
