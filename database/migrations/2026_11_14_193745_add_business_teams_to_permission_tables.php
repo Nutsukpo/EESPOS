@@ -3,12 +3,47 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
     public function up(): void
     {
         if ($this->shouldSkipForSqlite()) {
+            return;
+        }
+
+        // The original permissions migration may already have created
+        // all business team columns. In that case, only restore the
+        // missing permission foreign key and skip duplicate alterations.
+        if (
+            Schema::hasColumn('roles', 'business_id') &&
+            Schema::hasColumn('model_has_roles', 'business_id') &&
+            Schema::hasColumn('model_has_permissions', 'business_id')
+        ) {
+            $foreignKey = DB::selectOne(
+                "SELECT CONSTRAINT_NAME
+                 FROM information_schema.KEY_COLUMN_USAGE
+                 WHERE TABLE_SCHEMA = DATABASE()
+                   AND TABLE_NAME = ?
+                   AND COLUMN_NAME = ?
+                   AND REFERENCED_TABLE_NAME = ?
+                   AND REFERENCED_COLUMN_NAME = ?
+                 LIMIT 1",
+                ['model_has_permissions', 'permission_id', 'permissions', 'id']
+            );
+
+            if (!$foreignKey) {
+                Schema::table('model_has_permissions', function (Blueprint $table) {
+                    $table->foreign(
+                        'permission_id',
+                        'model_has_permissions_permission_id_fk'
+                    )->references('id')
+                        ->on('permissions')
+                        ->onDelete('cascade');
+                });
+            }
+
             return;
         }
 
