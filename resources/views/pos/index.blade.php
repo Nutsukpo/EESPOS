@@ -985,18 +985,30 @@
         padding: 4px 0 8px;
         border-bottom: 2px solid #000;
     }
-    .pos-receipt-classic .pos-receipt-details .row {
-        display: flex;
-        justify-content: space-between;
-        gap: 8px;
+    .pos-receipt-classic .pos-receipt-details .receipt-meta-row {
+        display: grid !important;
+        grid-template-columns: 72px minmax(0, 1fr);
+        align-items: baseline;
+        column-gap: 8px;
+        width: 100%;
+        margin: 0 !important;
+        padding: 2px 0;
+        line-height: 1.4;
     }
-    .pos-receipt-classic .pos-receipt-details .row span {
+    .pos-receipt-classic .pos-receipt-details .receipt-meta-row span {
+        display: block;
+        min-width: 0;
         color: #000 !important;
         font-weight: 700 !important;
     }
-    .pos-receipt-classic .pos-receipt-details .row span:last-child {
+    .pos-receipt-classic .pos-receipt-details .receipt-meta-row span:first-child {
+        white-space: nowrap;
+        text-align: left;
+    }
+    .pos-receipt-classic .pos-receipt-details .receipt-meta-row span:last-child {
         text-align: right;
         overflow-wrap: anywhere;
+        word-break: break-word;
     }
     .pos-receipt-table { margin-top: 7px; }
     .pos-receipt-table-head,
@@ -1449,11 +1461,10 @@
                 </div>
 
                 <div class="pos-receipt-details">
-                    <div class="row"><span>Receipt #</span><span id="posReceiptNumber">Pending checkout</span></div>
-                    <div class="row"><span>Date</span><span id="posReceiptDate"></span></div>
-                    <div class="row"><span>Method</span><span id="posReceiptMethod">Cash</span></div>
-                    <div class="row"><span>Cashier</span><span id="posReceiptCashier">{{ auth()->user()->name }}</span></div>
-                    <div class="row"><span>Customer</span><span id="posReceiptCustomer">Walk-in</span></div>
+                    <div class="receipt-meta-row"><span>Receipt #</span><span id="posReceiptNumber">Pending checkout</span></div>
+                    <div class="receipt-meta-row"><span>Date</span><span id="posReceiptDate"></span></div>
+                    <div class="receipt-meta-row"><span>Method</span><span id="posReceiptMethod">Cash</span></div>
+                    <div class="receipt-meta-row"><span>Cashier</span><span id="posReceiptCashier">{{ auth()->user()->name }}</span></div>
                 </div>
 
                 <div class="pos-receipt-table">
@@ -1467,8 +1478,6 @@
 
                 <div class="pos-receipt-totals" id="posReceiptTotals">
                     <div class="row"><span>SUBTOTAL</span><span id="posReceiptSubtotal">{{ $currencySymbol }}0.00</span></div>
-                    <div class="row"><span>DISCOUNT</span><span id="posReceiptDiscount">{{ $currencySymbol }}0.00</span></div>
-                    <div class="row"><span>TAX</span><span id="posReceiptTax">{{ $currencySymbol }}0.00</span></div>
                     <div class="row grand"><span>ORDER TOTAL</span><span id="posReceiptTotal">{{ $currencySymbol }}0.00</span></div>
                     <div class="row paid"><span>AMOUNT PAID</span><span id="posReceiptAmountPaid">{{ $currencySymbol }}0.00</span></div>
                     <div class="row"><span>CHANGE</span><span id="posReceiptChange">{{ $currencySymbol }}0.00</span></div>
@@ -1877,8 +1886,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('posReceiptNumber').textContent = 'Pending checkout';
         document.getElementById('posReceiptDate').textContent = new Date().toLocaleString();
         document.getElementById('posReceiptMethod').textContent = 'Cash';
-        document.getElementById('posReceiptCustomer').textContent =
-            customerSelect.selectedOptions[0]?.text ?? 'Walk-in';
         document.getElementById('posReceiptItems').innerHTML = cart.length
             ? cart.map(item => `
                 <div class="pos-receipt-item">
@@ -1891,8 +1898,6 @@ document.addEventListener('DOMContentLoaded', function () {
             : '<div class="pos-receipt-empty">No items added</div>';
 
         document.getElementById('posReceiptSubtotal').textContent = money(totals.subtotal);
-        document.getElementById('posReceiptDiscount').textContent = money(totals.discount);
-        document.getElementById('posReceiptTax').textContent = money(totals.tax);
         document.getElementById('posReceiptTotal').textContent = money(totals.total);
         document.getElementById('posReceiptAmountPaid').textContent = money(0);
         document.getElementById('posReceiptChange').textContent = money(0);
@@ -1904,7 +1909,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('posReceiptNumber').textContent = receipt.receiptNumber;
         document.getElementById('posReceiptDate').textContent = receipt.date;
         document.getElementById('posReceiptMethod').textContent = receipt.paymentMethod || 'Cash';
-        document.getElementById('posReceiptCustomer').textContent = receipt.customer;
         document.getElementById('posReceiptItems').innerHTML = receipt.items.map(item => `
             <div class="pos-receipt-item">
                 <span class="item-name">${escapeHtml(item.product_name)}</span>
@@ -1915,8 +1919,6 @@ document.addEventListener('DOMContentLoaded', function () {
         `).join('');
 
         document.getElementById('posReceiptSubtotal').textContent = money(receipt.subtotal);
-        document.getElementById('posReceiptDiscount').textContent = money(receipt.discount);
-        document.getElementById('posReceiptTax').textContent = money(receipt.tax);
         document.getElementById('posReceiptTotal').textContent = money(receipt.total);
         document.getElementById('posReceiptAmountPaid').textContent = money(receipt.amountPaid);
         document.getElementById('posReceiptChange').textContent = money(receipt.change);
@@ -2113,7 +2115,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     year: 'numeric', month: 'short', day: 'numeric',
                     hour: '2-digit', minute: '2-digit'
                 }),
-                customer: customerSelect.selectedOptions[0]?.text ?? 'Walk-in',
                 items: cart.map(item => ({ ...item })),
                 subtotal: Number(data.subtotal ?? totals.subtotal),
                 discount: Number(totals.discount),
