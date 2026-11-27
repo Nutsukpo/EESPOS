@@ -944,6 +944,163 @@
         margin-bottom: 3px;
     }
 
+    /* ===== Classic payment receipt layout ===== */
+    .pos-receipt-classic {
+        color: #000 !important;
+        background: #fff !important;
+        font-family: 'Courier New', 'SF Mono', monospace !important;
+        font-size: 11px !important;
+        line-height: 1.45;
+        padding: 12px !important;
+    }
+    .pos-receipt-classic .pos-receipt-brand {
+        text-align: center;
+        border-bottom: 2px solid #000;
+        padding: 0 0 9px;
+        margin-bottom: 7px;
+    }
+    .pos-receipt-classic .pos-receipt-brand strong {
+        color: #000 !important;
+        font-family: inherit !important;
+        font-size: 15px !important;
+        font-weight: 900 !important;
+        letter-spacing: .02em;
+    }
+    .pos-receipt-classic .pos-receipt-brand span {
+        color: #000 !important;
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        margin-top: 2px;
+    }
+    .pos-receipt-classic .pos-receipt-brand .pos-receipt-type {
+        font-size: 12px !important;
+        font-weight: 900 !important;
+        letter-spacing: .04em;
+        margin-top: 5px;
+    }
+    .pos-receipt-classic .pos-receipt-details {
+        color: #000 !important;
+        font-size: 10px !important;
+        line-height: 1.65;
+        padding: 4px 0 8px;
+        border-bottom: 2px solid #000;
+    }
+    .pos-receipt-classic .pos-receipt-details .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+    }
+    .pos-receipt-classic .pos-receipt-details .row span {
+        color: #000 !important;
+        font-weight: 700 !important;
+    }
+    .pos-receipt-classic .pos-receipt-details .row span:last-child {
+        text-align: right;
+        overflow-wrap: anywhere;
+    }
+    .pos-receipt-table { margin-top: 7px; }
+    .pos-receipt-table-head,
+    .pos-receipt-classic .pos-receipt-item {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 28px 52px 58px;
+        gap: 4px;
+        align-items: start;
+    }
+    .pos-receipt-table-head {
+        color: #000;
+        font-weight: 900;
+        font-size: 9px;
+        border-bottom: 1px dashed #000;
+        padding: 2px 0 5px;
+    }
+    .pos-receipt-table-head span:not(:first-child),
+    .pos-receipt-classic .item-qty,
+    .pos-receipt-classic .item-price,
+    .pos-receipt-classic .item-total { text-align: right; }
+    .pos-receipt-classic .pos-receipt-items {
+        border: 0;
+        padding: 5px 0 7px;
+        font-size: 10px !important;
+    }
+    .pos-receipt-classic .pos-receipt-item {
+        color: #000 !important;
+        margin: 4px 0;
+        gap: 4px;
+    }
+    .pos-receipt-classic .pos-receipt-item span,
+    .pos-receipt-classic .pos-receipt-item strong {
+        color: #000 !important;
+        font-weight: 700 !important;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+    .pos-receipt-classic .pos-receipt-item .item-name {
+        min-width: 0;
+    }
+    .pos-receipt-classic .pos-receipt-item .item-qty,
+    .pos-receipt-classic .pos-receipt-item .item-price,
+    .pos-receipt-classic .pos-receipt-item .item-total {
+        white-space: nowrap;
+    }
+    .pos-receipt-empty {
+        text-align: center;
+        padding: 9px 0;
+        color: #000;
+        font-weight: 700;
+    }
+    .pos-receipt-classic .pos-receipt-totals {
+        border-top: 1px dashed #000;
+        padding-top: 6px;
+        color: #000 !important;
+        font-size: 10px !important;
+    }
+    .pos-receipt-classic .pos-receipt-totals .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 2px 0;
+        color: #000 !important;
+        font-weight: 700 !important;
+    }
+    .pos-receipt-classic .pos-receipt-totals .row span {
+        color: #000 !important;
+        font-weight: inherit !important;
+    }
+    .pos-receipt-classic .pos-receipt-totals .row.grand {
+        border-top: 1px solid #000;
+        margin-top: 4px;
+        padding-top: 6px;
+        font-size: 11px !important;
+        font-weight: 900 !important;
+        font-family: inherit !important;
+    }
+    .pos-receipt-classic .pos-receipt-totals .row.paid {
+        font-weight: 900 !important;
+    }
+    .pos-receipt-status {
+        text-align: center;
+        border-top: 3px double #000;
+        border-bottom: 3px double #000;
+        margin-top: 8px;
+        padding: 7px 2px;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: .04em;
+        color: #000;
+    }
+    .pos-receipt-classic .pos-receipt-footer {
+        color: #000 !important;
+        font-size: 9px !important;
+        font-weight: 700 !important;
+        padding-top: 9px;
+        line-height: 1.5;
+    }
+    .pos-receipt-classic .pos-receipt-footer .thanks {
+        color: #000 !important;
+        font-weight: 900 !important;
+        font-size: 10px;
+    }
+
     /* ===== Toast ===== */
     .pos-toast {
         position: fixed;
@@ -1015,6 +1172,39 @@
         .pos-receipt::before,
         .pos-receipt::after {
             display: none !important;
+        }
+        .pos-receipt-classic,
+        .pos-receipt-classic * {
+            color: #000 !important;
+            font-family: 'Courier New', 'SF Mono', monospace !important;
+            font-weight: 700 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        .pos-receipt-classic .pos-receipt-brand strong,
+        .pos-receipt-classic .pos-receipt-type,
+        .pos-receipt-classic .pos-receipt-status,
+        .pos-receipt-classic .grand,
+        .pos-receipt-classic .paid {
+            font-weight: 900 !important;
+        }
+
+        /* Make every printed receipt text element dark and easy to read. */
+        .pos-receipt,
+        .pos-receipt * {
+            color: #000 !important;
+            font-weight: 700 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        /* Keep headings, item amounts and the grand total extra prominent. */
+        .pos-receipt strong,
+        .pos-receipt b,
+        .pos-receipt .pos-receipt-type,
+        .pos-receipt .pos-receipt-totals .row.grand,
+        .pos-receipt .pos-receipt-footer .thanks {
+            font-weight: 900 !important;
         }
     }
 
@@ -1245,33 +1435,50 @@
                 </button>
             </div>
 
-            <div class="pos-receipt">
+            <div class="pos-receipt pos-receipt-classic">
                 <div class="pos-receipt-brand">
                     <strong>{{ $business->name }}</strong>
+                    @if($business->address)
+                        <span>{{ $business->address }}</span>
+                    @endif
+                    @if($business->phone)
+                        <span>Tel: {{ $business->phone }}</span>
+                    @endif
                     <span>{{ $selectedBranch->name }}</span>
-                    <span class="pos-receipt-type">Sales Receipt</span>
+                    <span class="pos-receipt-type">Payment Receipt</span>
                 </div>
 
                 <div class="pos-receipt-details">
-                    <div class="row"><span>Receipt</span><span id="posReceiptNumber">Pending checkout</span></div>
+                    <div class="row"><span>Receipt #</span><span id="posReceiptNumber">Pending checkout</span></div>
                     <div class="row"><span>Date</span><span id="posReceiptDate"></span></div>
+                    <div class="row"><span>Method</span><span id="posReceiptMethod">Cash</span></div>
+                    <div class="row"><span>Cashier</span><span id="posReceiptCashier">{{ auth()->user()->name }}</span></div>
                     <div class="row"><span>Customer</span><span id="posReceiptCustomer">Walk-in</span></div>
                 </div>
 
-                <div class="pos-receipt-items" id="posReceiptItems">
-                    <div style="text-align:center; color:var(--pos-muted); padding:12px 0;">No items added</div>
-                </div>
-
-                <div class="pos-receipt-totals" id="posReceiptTotals">
-                    <div class="row grand">
-                        <span>Total</span>
-                        <span id="posReceiptTotal">{{ $currencySymbol }}0.00</span>
+                <div class="pos-receipt-table">
+                    <div class="pos-receipt-table-head">
+                        <span>ITEM</span><span>QTY</span><span>PRICE</span><span>TOTAL</span>
+                    </div>
+                    <div class="pos-receipt-items" id="posReceiptItems">
+                        <div class="pos-receipt-empty">No items added</div>
                     </div>
                 </div>
 
+                <div class="pos-receipt-totals" id="posReceiptTotals">
+                    <div class="row"><span>SUBTOTAL</span><span id="posReceiptSubtotal">{{ $currencySymbol }}0.00</span></div>
+                    <div class="row"><span>DISCOUNT</span><span id="posReceiptDiscount">{{ $currencySymbol }}0.00</span></div>
+                    <div class="row"><span>TAX</span><span id="posReceiptTax">{{ $currencySymbol }}0.00</span></div>
+                    <div class="row grand"><span>ORDER TOTAL</span><span id="posReceiptTotal">{{ $currencySymbol }}0.00</span></div>
+                    <div class="row paid"><span>AMOUNT PAID</span><span id="posReceiptAmountPaid">{{ $currencySymbol }}0.00</span></div>
+                    <div class="row"><span>CHANGE</span><span id="posReceiptChange">{{ $currencySymbol }}0.00</span></div>
+                </div>
+
+                <div class="pos-receipt-status" id="posReceiptStatus">PENDING CHECKOUT</div>
+
                 <div class="pos-receipt-footer">
-                    <div class="thanks">Thank you!</div>
-                    <div>Please keep this receipt for your records.</div>
+                    <div class="thanks">Thank you for your business!</div>
+                    <div>Please retain this receipt for your records.</div>
                 </div>
             </div>
         </section>
@@ -1284,12 +1491,48 @@
     <span id="posToastMessage"></span>
 </div>
 
+<style>
+    #posLockOverlay { display:none; position:fixed; inset:0; z-index:100000; align-items:center; justify-content:center; padding:24px; background:rgba(9,25,17,.78); backdrop-filter:blur(7px); }
+    #posLockOverlay.is-visible { display:flex; }
+    .pos-lock-card { width:min(100%,430px); padding:32px; border-radius:18px; background:#fff; color:#14261c; box-shadow:0 24px 80px rgba(0,0,0,.28); }
+    .pos-lock-icon { display:grid; place-items:center; width:54px; height:54px; margin-bottom:18px; border-radius:15px; background:#e8f3ec; color:#1a5c3f; font-size:24px; }
+    .pos-lock-card h2 { margin:0 0 8px; font-size:24px; font-weight:750; }
+    .pos-lock-card p { margin:0 0 22px; color:#64756b; line-height:1.55; }
+    .pos-lock-card label { display:block; margin:14px 0 6px; font-size:13px; font-weight:650; }
+    .pos-lock-card input { box-sizing:border-box; width:100%; min-height:46px; padding:10px 12px; border:1px solid #cfdad3; border-radius:9px; background:#fff; color:#14261c; font:inherit; }
+    .pos-lock-card input:focus { outline:3px solid rgba(26,92,63,.14); border-color:#1a5c3f; }
+    .pos-lock-submit { width:100%; min-height:47px; margin-top:20px; border:0; border-radius:9px; background:#1a5c3f; color:#fff; font:inherit; font-weight:700; cursor:pointer; }
+    .pos-lock-submit:disabled { opacity:.65; cursor:wait; }
+    #posLockError { min-height:20px; margin-top:10px; color:#b42318; font-size:13px; }
+    @media (max-width:480px) { .pos-lock-card { padding:24px; } }
+</style>
+
+<div id="posLockOverlay" role="dialog" aria-modal="true" aria-labelledby="posLockTitle"
+     aria-hidden="{{ $posLocked ? 'false' : 'true' }}" class="{{ $posLocked ? 'is-visible' : '' }}">
+    <div class="pos-lock-card">
+        <div class="pos-lock-icon"><i class="fas fa-lock"></i></div>
+        <h2 id="posLockTitle">POS locked</h2>
+        <p>This till has been locked after inactivity. Your unfinished sale is still here. Sign in again to continue.</p>
+        <form id="posUnlockForm">
+            <label for="posUnlockEmail">Email address</label>
+            <input id="posUnlockEmail" name="email" type="email" autocomplete="username" required maxlength="254" placeholder="Enter your email address">
+            <label for="posUnlockPassword">Password</label>
+            <input id="posUnlockPassword" name="password" type="password" autocomplete="current-password" required>
+            <div id="posLockError" role="alert" aria-live="polite"></div>
+            <button class="pos-lock-submit" id="posUnlockButton" type="submit">Unlock POS</button>
+        </form>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const currency = @json($currencySymbol);
     const searchUrl = @json(route('business.pos.products.search', ['business' => $business->slug]));
     const checkoutUrl = @json(route('business.pos.checkout', ['business' => $business->slug]));
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    const lockUrl = @json(route('business.pos.lock', ['business' => $business->slug]));
+    const activityUrl = @json(route('business.pos.activity', ['business' => $business->slug]));
+    const unlockUrl = @json(route('business.pos.unlock', ['business' => $business->slug]));
+    let csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
     const searchInput = document.getElementById('posSearch');
     const branchSelect = document.getElementById('posBranch');
@@ -1330,6 +1573,119 @@ document.addEventListener('DOMContentLoaded', function () {
         toastTimer = setTimeout(() => toast.classList.remove('show'), 4000);
     }
 
+    const posLockOverlay = document.getElementById('posLockOverlay');
+    const posUnlockForm = document.getElementById('posUnlockForm');
+    const posUnlockEmail = document.getElementById('posUnlockEmail');
+    const posUnlockPassword = document.getElementById('posUnlockPassword');
+    const posUnlockButton = document.getElementById('posUnlockButton');
+    const posLockError = document.getElementById('posLockError');
+    const serverInitiallyLocked = @json($posLocked);
+    const posIdleLimit = 15 * 60 * 1000;
+    let posIdleTimer = null;
+    let posIsLocked = Boolean(serverInitiallyLocked);
+    let lastActivityPing = Date.now();
+    let lastMouseActivity = 0;
+
+    function showPosLock(notifyServer = true) {
+        if (posIsLocked) return;
+        posIsLocked = true;
+        clearTimeout(posIdleTimer);
+        posLockOverlay.classList.add('is-visible');
+        posLockOverlay.setAttribute('aria-hidden', 'false');
+        posLockError.textContent = '';
+        posUnlockPassword.value = '';
+
+        if (notifyServer) {
+            fetch(lockUrl, {
+                method: 'POST',
+                headers: { 'Accept':'application/json', 'X-Requested-With':'XMLHttpRequest', 'X-CSRF-TOKEN':csrfToken }
+            }).catch(() => {});
+        }
+        setTimeout(() => posUnlockEmail.focus(), 50);
+    }
+
+    async function pingPosActivity() {
+        if (posIsLocked || (Date.now() - lastActivityPing) < 30000) return;
+        lastActivityPing = Date.now();
+        try {
+            const response = await fetch(activityUrl, {
+                method: 'POST',
+                headers: { 'Accept':'application/json', 'X-Requested-With':'XMLHttpRequest', 'X-CSRF-TOKEN':csrfToken }
+            });
+            if (response.status === 423) showPosLock(false);
+        } catch (error) {
+            // Server-side expiry remains authoritative if the network is unavailable.
+        }
+    }
+
+    function resetPosIdleTimer() {
+        if (posIsLocked) return;
+        clearTimeout(posIdleTimer);
+        posIdleTimer = setTimeout(() => showPosLock(true), posIdleLimit);
+        pingPosActivity();
+    }
+
+    ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(eventName => {
+        document.addEventListener(eventName, resetPosIdleTimer, { passive:true });
+    });
+    document.addEventListener('mousemove', () => {
+        const nowMs = Date.now();
+        if (nowMs - lastMouseActivity >= 1000) {
+            lastMouseActivity = nowMs;
+            resetPosIdleTimer();
+        }
+    }, { passive:true });
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && !posIsLocked) resetPosIdleTimer();
+    });
+
+    posUnlockForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (!posIsLocked) return;
+        posUnlockButton.disabled = true;
+        posUnlockButton.textContent = 'Verifying...';
+        posLockError.textContent = '';
+
+        try {
+            const response = await fetch(unlockUrl, {
+                method:'POST',
+                headers: {
+                    'Accept':'application/json', 'Content-Type':'application/json',
+                    'X-Requested-With':'XMLHttpRequest', 'X-CSRF-TOKEN':csrfToken
+                },
+                body:JSON.stringify({ email:posUnlockEmail.value.trim(), password:posUnlockPassword.value })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || 'The email or password is incorrect.');
+
+            csrfToken = data.csrf_token;
+            const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+            if (csrfMeta) csrfMeta.content = csrfToken;
+            posIsLocked = false;
+            posLockOverlay.classList.remove('is-visible');
+            posLockOverlay.setAttribute('aria-hidden', 'true');
+            posUnlockPassword.value = '';
+            lastActivityPing = Date.now();
+            resetPosIdleTimer();
+            showToast('POS unlocked. You can continue your sale.', 'success');
+        } catch (error) {
+            posLockError.textContent = error.message || 'Unable to unlock. Please try again.';
+            posUnlockPassword.value = '';
+            posUnlockPassword.focus();
+        } finally {
+            posUnlockButton.disabled = false;
+            posUnlockButton.textContent = 'Unlock POS';
+        }
+    });
+
+    if (serverInitiallyLocked) {
+        posLockOverlay.classList.add('is-visible');
+        posLockOverlay.setAttribute('aria-hidden', 'false');
+        setTimeout(() => posUnlockEmail.focus(), 50);
+    } else {
+        resetPosIdleTimer();
+    }
+
     function skeletonGrid() {
         productGrid.innerHTML = Array.from({ length: 6 }).map(() => `
             <div class="pos-skeleton">
@@ -1360,6 +1716,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
             });
 
+            if (response.status === 423) {
+                showPosLock(false);
+                return;
+            }
             if (!response.ok) throw new Error('Product search failed.');
 
             const data = await response.json();
@@ -1515,34 +1875,52 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function renderReceiptDraft(totals) {
         document.getElementById('posReceiptNumber').textContent = 'Pending checkout';
-        document.getElementById('posReceiptTotal').textContent = money(totals.total);
+        document.getElementById('posReceiptDate').textContent = new Date().toLocaleString();
+        document.getElementById('posReceiptMethod').textContent = 'Cash';
+        document.getElementById('posReceiptCustomer').textContent =
+            customerSelect.selectedOptions[0]?.text ?? 'Walk-in';
         document.getElementById('posReceiptItems').innerHTML = cart.length
             ? cart.map(item => `
                 <div class="pos-receipt-item">
-                    <span>${escapeHtml(item.product_name)} × ${item.quantity}</span>
-                    <strong>${money(item.selling_price * item.quantity)}</strong>
+                    <span class="item-name">${escapeHtml(item.product_name)}</span>
+                    <span class="item-qty">${item.quantity}</span>
+                    <span class="item-price">${money(item.selling_price)}</span>
+                    <strong class="item-total">${money(item.selling_price * item.quantity)}</strong>
                 </div>
             `).join('')
-            : '<div style="text-align:center; color:var(--pos-muted); padding:12px 0;">No items added</div>';
+            : '<div class="pos-receipt-empty">No items added</div>';
 
-        document.getElementById('posReceiptCustomer').textContent =
-            customerSelect.selectedOptions[0]?.text ?? 'Walk-in';
-
+        document.getElementById('posReceiptSubtotal').textContent = money(totals.subtotal);
+        document.getElementById('posReceiptDiscount').textContent = money(totals.discount);
+        document.getElementById('posReceiptTax').textContent = money(totals.tax);
+        document.getElementById('posReceiptTotal').textContent = money(totals.total);
+        document.getElementById('posReceiptAmountPaid').textContent = money(0);
+        document.getElementById('posReceiptChange').textContent = money(0);
+        document.getElementById('posReceiptStatus').textContent = 'PENDING CHECKOUT';
         printButton.disabled = true;
     }
 
     function renderCompletedReceipt(receipt) {
         document.getElementById('posReceiptNumber').textContent = receipt.receiptNumber;
         document.getElementById('posReceiptDate').textContent = receipt.date;
+        document.getElementById('posReceiptMethod').textContent = receipt.paymentMethod || 'Cash';
         document.getElementById('posReceiptCustomer').textContent = receipt.customer;
         document.getElementById('posReceiptItems').innerHTML = receipt.items.map(item => `
             <div class="pos-receipt-item">
-                <span>${escapeHtml(item.product_name)} × ${item.quantity}</span>
-                <strong>${money(item.selling_price * item.quantity)}</strong>
+                <span class="item-name">${escapeHtml(item.product_name)}</span>
+                <span class="item-qty">${item.quantity}</span>
+                <span class="item-price">${money(item.selling_price)}</span>
+                <strong class="item-total">${money(item.selling_price * item.quantity)}</strong>
             </div>
         `).join('');
 
+        document.getElementById('posReceiptSubtotal').textContent = money(receipt.subtotal);
+        document.getElementById('posReceiptDiscount').textContent = money(receipt.discount);
+        document.getElementById('posReceiptTax').textContent = money(receipt.tax);
         document.getElementById('posReceiptTotal').textContent = money(receipt.total);
+        document.getElementById('posReceiptAmountPaid').textContent = money(receipt.amountPaid);
+        document.getElementById('posReceiptChange').textContent = money(receipt.change);
+        document.getElementById('posReceiptStatus').textContent = '*** PAID IN FULL ***';
         printButton.disabled = false;
     }
 
@@ -1716,6 +2094,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const data = await response.json();
 
+            if (response.status === 423) {
+                showPosLock(false);
+                return;
+            }
+
             if (!response.ok) {
                 const errors = data.errors
                     ? Object.values(data.errors).flat().join(' ')
@@ -1732,10 +2115,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }),
                 customer: customerSelect.selectedOptions[0]?.text ?? 'Walk-in',
                 items: cart.map(item => ({ ...item })),
-                subtotal: totals.subtotal,
-                discount: totals.discount,
-                tax: totals.tax,
+                subtotal: Number(data.subtotal ?? totals.subtotal),
+                discount: Number(totals.discount),
+                tax: Number(data.tax ?? totals.tax),
                 total: Number(data.total),
+                amountPaid: Number(data.amount_paid ?? data.total),
+                paymentMethod: 'Cash',
                 amountReceived: amountReceived,
                 change: Number(data.change)
             };

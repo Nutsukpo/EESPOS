@@ -57,10 +57,29 @@ class PosController extends Controller
             $request->integer('branch_id')
         ) ?? $branches->first();
 
+        // Keep POS lock state separate for each signed-in user and business.
+        $posSessionKey = 'pos_security.' . $business->id . '.' . $user->id;
+        $posSecurity = session()->get($posSessionKey);
+
+        if (!is_array($posSecurity)) {
+            $posSecurity = [
+                'locked' => false,
+                'last_activity_at' => now()->timestamp,
+            ];
+        } else {
+            $lastActivity = (int) ($posSecurity['last_activity_at'] ?? 0);
+            if ($lastActivity <= 0 || (now()->timestamp - $lastActivity) >= 900) {
+                $posSecurity['locked'] = true;
+            }
+        }
+
+        session()->put($posSessionKey, $posSecurity);
+
         return view('pos.index', [
             'business' => $business,
             'branches' => $branches,
             'selectedBranch' => $selectedBranch,
+            'posLocked' => (bool) ($posSecurity['locked'] ?? false),
         ]);
     }
 

@@ -135,10 +135,22 @@ Route::middleware(['auth'])
                     Route::get('/pos', [PosController::class, 'index'])
                         ->name('business.pos.index');
 
+                    Route::post('/pos/lock', [\App\Http\Controllers\PosSessionController::class, 'lock'])
+                        ->name('business.pos.lock');
+
+                    Route::post('/pos/activity', [\App\Http\Controllers\PosSessionController::class, 'activity'])
+                        ->name('business.pos.activity');
+
+                    Route::post('/pos/unlock', [\App\Http\Controllers\PosSessionController::class, 'unlock'])
+                        ->middleware('throttle:5,1')
+                        ->name('business.pos.unlock');
+
                     Route::get('/pos/products/search', [PosController::class, 'searchProducts'])
+                        ->middleware(\App\Http\Middleware\EnsurePosUnlocked::class)
                         ->name('business.pos.products.search');
 
                     Route::post('/pos/checkout', [PosController::class, 'checkout'])
+                        ->middleware(\App\Http\Middleware\EnsurePosUnlocked::class)
                         ->name('business.pos.checkout');
                 });
 

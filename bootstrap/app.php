@@ -18,6 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Enforce non-persistent authentication for every Fortify login request.
+        $middleware->appendToGroup('web', \App\Http\Middleware\ForceNoRemember::class);
+
         $middleware->alias([
             'business.access' => EnsureBusinessAccess::class,
         ]);

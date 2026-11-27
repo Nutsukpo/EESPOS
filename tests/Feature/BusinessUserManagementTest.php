@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Branch;
 use App\Models\Business;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,6 +19,8 @@ class BusinessUserManagementTest extends TestCase
     protected User $owner;
 
     protected Business $business;
+
+    protected Branch $branch;
 
     protected function setUp(): void
     {
@@ -48,6 +51,14 @@ class BusinessUserManagementTest extends TestCase
             'slug' => 'test-business',
             'business_type' => 'retail',
             'currency' => 'GHS',
+            'is_active' => true,
+        ]);
+
+        $this->branch = Branch::create([
+            'business_id' => $this->business->id,
+            'name' => 'Main Branch',
+            'code' => 'MAIN',
+            'is_main' => true,
             'is_active' => true,
         ]);
 
@@ -130,8 +141,11 @@ class BusinessUserManagementTest extends TestCase
         $response = $this->actingAs($this->owner)->post(
             route('business.users.store', $this->business),
             [
+                'branch_id' => $this->branch->id,
                 'name' => 'Test Cashier',
                 'email' => 'cashier@example.test',
+                'password' => 'cashier-test-password',
+                'password_confirmation' => 'cashier-test-password',
                 'role' => 'Inventory Officer',
             ]
         );
@@ -168,6 +182,7 @@ class BusinessUserManagementTest extends TestCase
         $response = $this->actingAs($this->owner)->post(
             route('business.users.store', $this->business),
             [
+                'branch_id' => $this->branch->id,
                 'name' => 'Different Submitted Name',
                 'email' => $existingUser->email,
                 'role' => 'Cashier',
@@ -209,6 +224,7 @@ class BusinessUserManagementTest extends TestCase
         )->post(
             route('business.users.store', $this->business),
             [
+                'branch_id' => $this->branch->id,
                 'name' => 'Duplicate Staff',
                 'email' => $existingUser->email,
                 'role' => 'Cashier',
@@ -227,6 +243,7 @@ class BusinessUserManagementTest extends TestCase
         $response = $this->actingAs($this->owner)->post(
             route('business.users.store', $this->business),
             [
+                'branch_id' => $this->branch->id,
                 'name' => 'Attempted Owner',
                 'email' => 'attempted-owner@example.test',
                 'role' => 'Owner',
@@ -263,6 +280,7 @@ class BusinessUserManagementTest extends TestCase
         $response = $this->actingAs($cashier)->post(
             route('business.users.store', $this->business),
             [
+                'branch_id' => $this->branch->id,
                 'name' => 'Unauthorized Staff',
                 'email' => 'unauthorized@example.test',
             ]
@@ -298,8 +316,11 @@ class BusinessUserManagementTest extends TestCase
         $response = $this->actingAs($manager)->post(
             route('business.users.store', $this->business),
             [
+                'branch_id' => $this->branch->id,
                 'name' => 'Manager Created Staff',
                 'email' => 'manager-staff@example.test',
+                'password' => 'manager-test-password',
+                'password_confirmation' => 'manager-test-password',
             ]
         );
 

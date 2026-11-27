@@ -1135,13 +1135,6 @@
                 </div>
             @endif
 
-            <!-- PASSKEY AUTHENTICATION -->
-            <div class="passkey-area">
-                <x-passkey-verify />
-            </div>
-
-            <div class="divider">Or sign in with email</div>
-
             <!-- EMAIL AND PASSWORD LOGIN -->
             <form method="POST" action="{{ route('login.store') }}">
                 @csrf
@@ -1189,18 +1182,7 @@
                         <div class="field-error">{{ $message }}</div>
                     @enderror
                 </div>
-
-                <div class="remember-row">
-                    <input
-                        type="checkbox"
-                        id="remember"
-                        name="remember"
-                        {{ old('remember') ? 'checked' : '' }}
-                    >
-                    <label for="remember">Keep me signed in</label>
-                </div>
-
-                <button type="submit" class="submit-button">
+<button type="submit" class="submit-button">
                     Sign in to your account
 
                     <svg width="18" height="18" viewBox="0 0 24 24"
